@@ -269,13 +269,13 @@ const productData = {
     products: [
       {
         imageClass: "industrial-1",
-        title: "Tripod Bases",
-        description: "FRP tripod bases for vessels under RTM",
+        title: "Storage Solutions",
+        description: "FRP storage containers for various industries",
       },
       {
         imageClass: "industrial-2",
-        title: "Vessel Liners",
-        description: "FRP liner for vessels under HLU",
+        title: "Sepration Rooms",
+        description: "FRP separation rooms for clean environments",
       },
       {
         imageClass: "industrial-3",
@@ -284,8 +284,8 @@ const productData = {
       },
       {
         imageClass: "industrial-4",
-        title: "Water Tanks",
-        description: "FRP water tanks from 5000 to 50000 ltr capacity",
+        title: "Porta Cabins",
+        description: "FRP porta cabins for temporary setups",
       },
     ],
     additionalContent: `
@@ -308,13 +308,13 @@ const productData = {
     products: [
       {
         imageClass: "custom-1",
-        title: "Furniture Components",
-        description: "Custom FRP furniture and school furniture",
+        title: "Bus stand with toilet",
+        description: "FRP bus stand with integrated toilet facility",
       },
       {
         imageClass: "custom-2",
-        title: "Spa Products",
-        description: "FRP components for salons and spas",
+        title: "Customized Boxes",
+        description: "Custom FRP boxes for various applications",
       },
       {
         imageClass: "custom-3",
@@ -413,5 +413,126 @@ document.addEventListener("DOMContentLoaded", function () {
       top: 0,
       behavior: "smooth",
     });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const track = document.getElementById("gallery-track");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const indicators = document.getElementById("gallery-indicators");
+  const items = document.querySelectorAll(".gallery-item");
+  function getVisibleItemsCount() {
+    if (window.innerWidth < 768) {
+      return 1; // Mobile: 1 item
+    } else if (window.innerWidth < 1024) {
+      return 2; // Tablet: 2 items
+    } else {
+      return 4; // Desktop: 4 items
+    }
+  }
+
+  let visibleItems = getVisibleItemsCount();
+  const totalItems = items.length;
+  let currentIndex = 0;
+  let timer;
+
+  function setItemWidths() {
+    visibleItems = getVisibleItemsCount();
+
+    const containerWidth = track.parentElement.clientWidth;
+    const gap = 16;
+    const totalGapWidth = gap * (visibleItems - 1);
+    const itemWidth = (containerWidth - totalGapWidth) / visibleItems;
+
+    items.forEach((item) => {
+      item.style.width = `${itemWidth}px`;
+    });
+    if (currentIndex > totalItems - visibleItems) {
+      currentIndex = Math.max(0, totalItems - visibleItems);
+    }
+    moveToIndex(currentIndex);
+    createIndicators();
+    updateIndicators();
+  }
+  function createIndicators() {
+    indicators.innerHTML = "";
+    const pages = Math.ceil((totalItems - visibleItems + 1) / 1);
+
+    for (let i = 0; i < pages; i++) {
+      const dot = document.createElement("div");
+      dot.classList.add("indicator");
+      if (i === Math.floor(currentIndex / 1)) dot.classList.add("active");
+      dot.addEventListener("click", () => {
+        currentIndex = i;
+        moveToIndex(currentIndex);
+        updateIndicators();
+        resetAutoScroll();
+      });
+      indicators.appendChild(dot);
+    }
+  }
+  function updateIndicators() {
+    const activePage = Math.floor(currentIndex / 1);
+    const dots = document.querySelectorAll(".indicator");
+
+    dots.forEach((dot, i) => {
+      if (i === activePage) {
+        dot.classList.add("active");
+      } else {
+        dot.classList.remove("active");
+      }
+    });
+  }
+  function moveToIndex(index) {
+    const itemWidth = items[0].offsetWidth;
+    const gapWidth = 16;
+    track.style.transform = `translateX(-${index * (itemWidth + gapWidth)}px)`;
+  }
+  function nextSlide() {
+    if (currentIndex >= totalItems - visibleItems) {
+      currentIndex = 0;
+    } else {
+      currentIndex++;
+    }
+
+    moveToIndex(currentIndex);
+    updateIndicators();
+  }
+  function prevSlide() {
+    if (currentIndex <= 0) {
+      currentIndex = totalItems - visibleItems;
+    } else {
+      currentIndex--;
+    }
+    moveToIndex(currentIndex);
+    updateIndicators();
+  }
+  function startAutoScroll() {
+    timer = setInterval(nextSlide, 1500); // Change slide every 3 seconds
+  }
+  function resetAutoScroll() {
+    clearInterval(timer);
+    startAutoScroll();
+  }
+  nextBtn.addEventListener("click", () => {
+    nextSlide();
+    resetAutoScroll();
+  });
+
+  prevBtn.addEventListener("click", () => {
+    prevSlide();
+    resetAutoScroll();
+  });
+  window.addEventListener("resize", () => {
+    setItemWidths();
+  });
+  setItemWidths();
+  startAutoScroll();
+  track.parentElement.addEventListener("mouseenter", () => {
+    clearInterval(timer);
+  });
+  track.parentElement.addEventListener("mouseleave", () => {
+    startAutoScroll();
   });
 });
