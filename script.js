@@ -274,8 +274,8 @@ const productData = {
       },
       {
         imageClass: "industrial-2",
-        title: "Sepration Rooms",
-        description: "FRP separation rooms for clean environments",
+        title: "Clean Rooms",
+        description: "FRP clean room panels and setups",
       },
       {
         imageClass: "industrial-3",
