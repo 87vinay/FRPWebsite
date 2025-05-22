@@ -224,152 +224,6 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
   document.head.appendChild(mobileStyle);
 });
-
-const productData = {
-  automotive: {
-    title: null,
-    products: [
-      {
-        imageClass: "automotive-1",
-        title: "Front & Rear Fascia",
-        description: "FRP front and rear fascia for buses & trucks",
-      },
-      {
-        imageClass: "automotive-2",
-        title: "Bumpers & Grills",
-        description: "FRP front bumpers and grills for commercial vehicles",
-      },
-      {
-        imageClass: "automotive-3",
-        title: "Dashboards",
-        description: "Custom FRP dashboards for buses & trucks",
-      },
-      {
-        imageClass: "automotive-4",
-        title: "Engine Covers",
-        description: "Durable FRP engine covers for commercial vehicles",
-      },
-    ],
-    additionalContent: `
-    <div class="product-info">
-        <h3>Automotive FRP Applications</h3>
-        <p>Our automotive FRP solutions provide lightweight, durable alternatives to traditional metal components, resulting in improved fuel efficiency and longer service life.</p>
-        <ul>
-             <li>Improved thermal insulation properties</li>
-            <li>High impact resistance and durability</li>
-            <li>Greater design flexibility for complex shapes</li>
-            <li>Reduced weight compared to metal components</li>
-            <li>Excellent resistance to corrosion and weathering</li>
-        </ul>
-    </div>
-`,
-  },
-  industrial: {
-    title: null,
-    products: [
-      {
-        imageClass: "industrial-1",
-        title: "Storage Solutions",
-        description: "FRP storage containers for various industries",
-      },
-      {
-        imageClass: "industrial-2",
-        title: "Clean Rooms",
-        description: "FRP clean room panels and setups",
-      },
-      {
-        imageClass: "industrial-3",
-        title: "Conveyor Trays",
-        description: "Multiple FRP trays for conveyor systems",
-      },
-      {
-        imageClass: "industrial-4",
-        title: "Porta Cabins",
-        description: "FRP porta cabins for temporary setups",
-      },
-    ],
-    additionalContent: `
-          <div class="product-list-full">
-              <h3>Industrial Applications:</h3>
-              <ul>
-                  <li>Water tanks with capacities of 5000-50000 liters</li>
-                  <li>Clean room setups</li>
-                  <li>Conveyor belt trays and robotic arm container trays</li>
-                  <li>Chemical storage solutions</li>
-                  <li>Naturopathy treatment equipment</li>
-                  <li>Sewer treatment plant components</li>
-                  <li>Porta cabins and shelters</li>
-              </ul>
-          </div>
-      `,
-  },
-  custom: {
-    title: null,
-    products: [
-      {
-        imageClass: "custom-1",
-        title: "Bus stand with toilet",
-        description: "FRP bus stand with integrated toilet facility",
-      },
-      {
-        imageClass: "custom-2",
-        title: "Customized Boxes",
-        description: "Custom FRP boxes for various applications",
-      },
-      {
-        imageClass: "custom-3",
-        title: "Amusement Park Items",
-        description: "Various amusement park components in FRP",
-      },
-      {
-        imageClass: "custom-4",
-        title: "Jigs & Fixtures",
-        description: "Custom jigs and fixtures for various applications",
-      },
-    ],
-    additionalContent: `
-          <div class="product-info">
-              <h3>Custom Solutions</h3>
-              <p>With our expertise in FRP manufacturing, we can create custom solutions for virtually any
-                  application. Our team works closely with clients from conceptualization to final
-                  commercial supplies, ensuring that each product meets specific requirements and highest
-                  quality standards.</p>
-              <p>The design flexibility of FRP allows for superior aesthetics compared to traditional
-                  materials, while providing enhanced durability and minimum maintenance requirements.</p>
-          </div>
-      `,
-  },
-};
-// Function to create a product card
-function createProductCard(product) {
-  return `
-      <div class="product-card">
-          <div class="product-image ${product.imageClass}"></div>
-          <h3>${product.title}</h3>
-          <p>${product.description}</p>
-      </div>
-  `;
-}
-// Function to render a category tab
-function renderCategoryTab(categoryId, isActive = false) {
-  const category = productData[categoryId];
-  let content = `<div class="tab-item ${
-    isActive ? "active" : ""
-  }" id="${categoryId}">`;
-  // Add product cards
-  content += '<div class="product-list">';
-  category.products.forEach((product) => {
-    content += createProductCard(product);
-  });
-  content += "</div>";
-  // Add additional content if available
-  if (category.additionalContent) {
-    content += category.additionalContent;
-  }
-  content += "</div>";
-  return content;
-}
-// Function to initialize the product tabs
 function initProductTabs() {
   const tabContent = document.getElementById("product-content");
   let tabsHTML = "";
@@ -535,4 +389,84 @@ document.addEventListener("DOMContentLoaded", function () {
   track.parentElement.addEventListener("mouseleave", () => {
     startAutoScroll();
   });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const track = document.querySelector(".product-slider-track");
+  const slides = Array.from(track.children);
+  const nextButton = document.querySelector(".next-btn");
+  const prevButton = document.querySelector(".prev-btn");
+
+  function getSlidesPerView() {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    if (window.innerWidth <= 1024) return 3;
+    return 4;
+  }
+
+  let currentIndex = 0;
+  let slidesPerView = getSlidesPerView();
+
+  function setSlideWidth() {
+    slidesPerView = getSlidesPerView();
+    const slideWidth = 100 / slidesPerView;
+    slides.forEach((slide) => {
+      slide.style.flex = `0 0 calc(${slideWidth}% - 20px)`;
+    });
+  }
+
+  function updateSliderPosition() {
+    const slideWidth = slides[0].getBoundingClientRect().width + 20; // width + margin
+    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+    prevButton.disabled = currentIndex === 0;
+    prevButton.style.opacity = currentIndex === 0 ? 0.5 : 1;
+    nextButton.disabled = currentIndex >= slides.length - slidesPerView;
+    nextButton.style.opacity =
+      currentIndex >= slides.length - slidesPerView ? 0.5 : 1;
+  }
+  function moveNext() {
+    if (currentIndex < slides.length - slidesPerView) {
+      currentIndex++;
+      updateSliderPosition();
+    }
+  }
+  function movePrev() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateSliderPosition();
+    }
+  }
+  function initSlider() {
+    setSlideWidth();
+    updateSliderPosition();
+    nextButton.addEventListener("click", moveNext);
+    prevButton.addEventListener("click", movePrev);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") moveNext();
+      if (e.key === "ArrowLeft") movePrev();
+    });
+    let touchStartX = 0;
+    let touchEndX = 0;
+    track.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    track.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        moveNext();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        movePrev();
+      }
+    }
+  }
+  window.addEventListener("resize", function () {
+    setSlideWidth();
+    updateSliderPosition();
+  });
+  initSlider();
 });
