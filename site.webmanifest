@@ -1,0 +1,21 @@
+{
+  "name": "Fibrelastic Composites - FRP Manufacturing Gurugram",
+  "short_name": "Fibrelastic",
+  "start_url": "/",
+  "scope": "/",
+  "description": "Fibrelastic Composites: Your trusted source for high-quality FRP manufacturing in Delhi & Gurgaon since 1985. We provide custom fiberglass solutions for the automotive, industrial, and railway sectors",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "categories": ["business", "manufacturing", "industrial"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "https://fibrelastic.in/images/logofrp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
